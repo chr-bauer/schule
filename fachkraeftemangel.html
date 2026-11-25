@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redaktion Fachkräftemangel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE: Zeitungsredaktion kurz vor Redaktionsschluss – knapp, fordernd, ernsthaft
+   IDEA: Themenwahl, Recherche mit Notizblock, Kommentar-Manuskript, Redaktionskonferenz
+   PICTURE: Zeitungskopf mit Rubrikleiste; der Arbeitsbereich selbst ist das Bild
+   COLOUR and TYPE: Zeitungspapier weiß, Druckerschwärze, ein Stempelrot; Libre Franklin
+   LAYOUT: eine Spalte, Reiter für die vier Arbeitsschritte, Themen und Schauplätze als Karten */
+:root{color-scheme:light dark;
+ --bg:light-dark(#f7f6f2,#141414);--card:light-dark(#ffffff,#1f1f1f);--ink:light-dark(#141414,#efede8);
+ --muted:light-dark(#5b5853,#b4b0a8);--line:light-dark(#d9d6cf,#3a3936);--red:light-dark(#c8102e,#ff5a6e);
+ --soft:light-dark(#f0eee8,#2a2a28);--ok:light-dark(#1d6b3a,#5fd08a);--warn:light-dark(#9a5b00,#f0b45a)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Libre Franklin",system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:880px;margin:0 auto;padding:clamp(18px,3vw,36px) max(4vw,16px) 70px}
+.mast{border-top:6px solid var(--ink);border-bottom:1px solid var(--ink);padding:10px 0 12px;margin-bottom:6px}
+.mast .name{font-size:clamp(34px,7vw,52px);font-weight:900;line-height:1.05;letter-spacing:-.02em}
+.mast .sub{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin-top:4px}
+h2{font-size:26px;line-height:1.15;margin:.2em 0 .4em;text-wrap:balance}
+h3{font-size:19px;margin:.6em 0 .3em}
+p{margin:.45em 0}.muted{color:var(--muted)}.small{font-size:14px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin:14px 0 6px}
+.tabs button{background:transparent;color:var(--muted);border:0;border-bottom:3px solid transparent;border-radius:0;padding:10px 12px}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--red)}
+button{font:inherit;font-weight:600;border:0;border-radius:8px;padding:11px 18px;min-height:44px;cursor:pointer;background:var(--ink);color:var(--bg)}
+button.sec{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.4;cursor:default}
+button:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:14px 0}
+.memo{border-left:6px solid var(--red)}
+.kicker{font-size:13px;font-weight:700;color:var(--red)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px;margin:12px 0}
+.pick{text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:16px;font-weight:400}
+.pick b{display:block;font-size:18px;margin:2px 0 4px}
+.pick.on{border-color:var(--red);background:var(--soft)}
+.pick.done{border-color:var(--ok)}
+.pick .st{font-size:13px;font-weight:700;color:var(--muted)}
+.pick.done .st{color:var(--ok)}
+ol,ul{margin:.3em 0;padding-left:1.3em}li{margin:.3em 0}
+label{display:block;font-weight:700;margin:18px 0 4px}
+.hint{font-size:14px;color:var(--muted);font-weight:400;display:block}
+textarea,input{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+textarea{min-height:120px;resize:vertical}
+.wc{font-size:14px;color:var(--muted);text-align:right;font-weight:600}
+.wc.okc{color:var(--ok)}.wc.over{color:var(--red)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
+details.box{background:var(--soft);border-radius:8px;padding:10px 14px;margin:10px 0}
+details.box summary{cursor:pointer;font-weight:700}
+.notebox{white-space:pre-wrap;font-size:15px;margin:6px 0 10px}
+.vs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px;margin:8px 0}
+.vs div{background:var(--soft);border-radius:8px;padding:10px 14px;font-size:15px}
+.verdict{font-size:clamp(24px,4vw,32px);font-weight:900;line-height:1.1;display:inline-block;border:4px solid currentColor;padding:6px 14px;transform:rotate(-2deg);margin:6px 0 10px}
+.v-ok{color:var(--ok)}.v-mid{color:var(--warn)}.v-bad{color:var(--red)}
+.check{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.check i{font-style:normal;font-weight:900;width:1.4em;flex:none}
+.check.y i{color:var(--ok)}.check.n i{color:var(--red)}
+.check .tip{display:block;font-size:15px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <div class="name">Der Kurs-Kurier</div>
+    <div class="sub"><span>Ressort Politik &amp; Wirtschaft · Meinung</span><span>Redaktionsschluss: Ende der Stunde</span></div>
+  </header>
+  <nav class="tabs" id="tabs"></nav>
+  <main id="app"></main>
+</div>
+
+<script>
+{
+const TOPICS={
+ rente:{t:'Länger arbeiten',q:'Sollen Menschen in Deutschland länger arbeiten?',teaser:'Rente mit 70? Oder freiwillig länger im Job?',
+  kw:/rente|länger arbeit|ältere|ruhestand|silver|best ager|renteneintritt/i,
+  src:['M4','M5','Wolf','Fratzscher','Gesamtmetall','DIW','Breuer','Babyboomer'],
+  places:[
+   {id:'a',t:'Rente – und dann?',m:'M4',lage:'Ihr besucht Menschen, die über das Rentenalter hinaus arbeiten.',
+    auf:['Erklärt, warum das Thema gerade jetzt dringlich wird (Z. 1–22).','Nennt die Motive, aus denen Menschen über das Rentenalter hinaus arbeiten (Z. 47–63).','Arbeitet die Kritik am Begriff der „Potenziale“ heraus (Z. 64–82).','Wertet die Grafik aus: Wie hat sich die Zahl der Beschäftigten ab 60 und ab 65 Jahren verändert?']},
+   {id:'b',t:'Streit um die Rente mit 70',m:'M5, Z. 1–18',lage:'Ein Arbeitgeberpräsident fordert längere Arbeitszeiten, ein Ökonom widerspricht.',
+    auf:['Gebt den Vorschlag von Stefan Wolf und seine Begründung wieder.','Stellt dar, wie Marcel Fratzscher den Vorschlag bewertet.','Ordnet beide Akteure ein: Wen vertreten sie, welche Interessen könnten sie haben?']}],
+  eigen:['Was würde eine Rente mit 70 für eine Pflegekraft, einen Dachdecker oder eine Bürokauffrau bedeuten?','Was ist gerechter: ein festes Rentenalter für alle oder eine flexible Lösung?','Was hätte eure Generation davon, wenn Ältere länger arbeiten – oder wenn nicht?','Freiwilligkeit oder Pflicht: Was wirkt mehr, was ist fairer?']},
+ frauen:{t:'Erwerbstätigkeit von Frauen erhöhen',q:'Soll die Politik mehr Frauen in (Vollzeit-)Arbeit bringen?',teaser:'Größtes Potenzial – oder Privatsache?',
+  kw:/frauen|teilzeit|vollzeit|mütter|erwerbstätigkeit/i,
+  src:['M5','Fratzscher','Bertelsmann','DIW','35','70','20'],
+  places:[
+   {id:'a',t:'Die Teilzeitfrage',m:'M5',lage:'Viele Frauen arbeiten in Teilzeit oder gar nicht. Ihr recherchiert, warum das so ist und welches Potenzial darin liegt.',
+    auf:['Gebt wieder, warum Fratzscher die Rente mit 70 ablehnt und die Frauenerwerbstätigkeit für sinnvoller hält (Z. 1–18).','Notiert die wichtigsten Zahlen zur Erwerbstätigkeit von Frauen (Z. 19–31).','Erklärt, warum der Text das nicht als „Generationenfrage“ sieht.','Arbeitet heraus, wen der Text in der Verantwortung sieht und warum (Z. 32–47).']}],
+  eigen:['Welche „Hürden“ könnten gemeint sein? Der Text nennt sie nicht. Denkt z. B. an Kinderbetreuung, Pflege von Angehörigen, Arbeitszeiten, Steuern, Rollenbilder.','Wer müsste was tun: Staat, Unternehmen, Familien?','Darf der Staat Einfluss darauf nehmen, wie Familien Arbeit und Kinderbetreuung aufteilen? Wo endet Wahlfreiheit?','Was spricht dagegen oder macht es schwierig, z. B. Kosten oder fehlende Erzieherinnen und Erzieher?']},
+ zuwanderung:{t:'Fachkräftezuwanderung',q:'Soll Deutschland stärker auf Fachkräfte aus dem Ausland setzen?',teaser:'400.000 pro Jahr – wie soll das gehen?',
+  kw:/zuwander|einwander|ausländ|migra|ausland|drittstaat/i,
+  src:['M6','M7','Fratzscher','Risius','IAB','IW','KOFA','Bertelsmann','400.000'],
+  places:[
+   {id:'a',t:'Fachkräfte aus dem Ausland',m:'M6',lage:'Ohne Zuwanderung, sagen Forschungsinstitute, wird die Lücke größer. Ihr fragt nach, was dafür nötig wäre.',
+    auf:['Notiert den Zuwanderungsbedarf laut IAB (Z. 1–9).','Stellt dar, vor welchen Folgen Fratzscher warnt (Z. 10–19).','Gebt die Forderungen von Fratzscher und Paula Risius wieder (Z. 19–31).']},
+   {id:'b',t:'Datenredaktion',m:'M7',lage:'Eure Kolleginnen aus der Datenredaktion haben zwei Grafiken vorbereitet.',
+    auf:['Beschreibt, wie hoch der Zuwanderungsbedarf laut Bertelsmann Stiftung ist und woher die Menschen kommen sollen.','Beschreibt die Entwicklung der Zuzüge aus Drittstaaten 2009–2018 und vergleicht sie mit der Zahl offener Stellen.']}],
+  eigen:['Was brauchen Fachkräfte aus dem Ausland, damit sie kommen und bleiben (Sprache, Anerkennung von Abschlüssen, Wohnung …)?','Welche Folgen hat es für die Herkunftsländer, wenn ihre Fachkräfte abwandern?','Welche Sorgen haben manche Menschen in Deutschland bei dem Thema – und wie würdet ihr darauf antworten?','Reicht ein Gesetz, oder muss sich auch in der Gesellschaft etwas ändern?']}
+};
+const MIN=250,MAX=400;
+const wcText=n=>`${n} Wörter · erlaubt: ${MIN}–${MAX}`+(n<MIN?` · noch ${MIN-n} Wörter`:n>MAX?` · ${n-MAX} Wörter zu viel`:' · passt');
+const wcCls=n=>n<MIN?'':n>MAX?'over':'okc';
+const KEY='kurskurier-v3';
+let S={tab:'auftrag',open:null,team:'',topic:null,notes:{},art:{}};
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s)S=Object.assign(S,s,{open:null})}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const words=s=>(String(s||'').trim().match(/\S+/g)||[]).length;
+const cnt=(s,re)=>(String(s||'').match(re)||[]).length;
+const app=document.getElementById('app'),tabs=document.getElementById('tabs');
+const TABS=[['auftrag','1 Auftrag'],['recherche','2 Recherche'],['schreiben','3 Schreiben'],['konferenz','4 Redaktionskonferenz']];
+const nk=id=>S.topic+'-'+id;
+
+const KOMMENTAR=`
+<p>Ein <b>Kommentar</b> ist ein Meinungsbeitrag. Anders als ein Bericht informiert er nicht neutral, sondern bezieht <b>klar Stellung</b>. Euer Kommentar soll 250 bis 400 Wörter lang sein. In der Zeitung ist er mit dem Namen der Autorin oder des Autors gekennzeichnet.</p>
+<div class="vs"><div><b>Bericht</b><br>sachlich, neutral, beantwortet die W-Fragen, keine eigene Meinung</div><div><b>Kommentar</b><br>wertend, persönlich, will überzeugen, darf zuspitzen</div></div>
+<h3>Was einen guten Kommentar ausmacht</h3>
+<ul>
+<li><b>Klare Position:</b> Die Leserinnen und Leser wissen nach wenigen Sätzen, was ihr denkt.</li>
+<li><b>Aufhänger:</b> Der Einstieg weckt Interesse, z. B. mit einer überraschenden Zahl, einem Zitat oder einem Beispiel.</li>
+<li><b>Begründete Argumente:</b> Meinung allein reicht nicht. Jede Behauptung wird begründet und mit Fakten oder Beispielen gestützt.</li>
+<li><b>Die Gegenseite ernst nehmen:</b> Ein starker Kommentar greift das wichtigste Gegenargument auf und entkräftet es („Zwar …, aber …“).</li>
+<li><b>Lebendige Sprache:</b> Rhetorische Fragen, Vergleiche und kurze, zugespitzte Sätze sind erlaubt und erwünscht. Die Ich- oder Wir-Form ist üblich.</li>
+<li><b>Starker Schluss:</b> Ein Fazit, eine Forderung oder eine Pointe, die hängen bleibt.</li>
+</ul>`;
+
+function vAuftrag(){return `
+<div class="card memo"><div class="kicker">Hausmitteilung der Chefredaktion</div>
+<h2>Woher sollen die Fachkräfte kommen?</h2>
+<p>Liebes Team, Betriebe finden keine Leute, Aufträge bleiben liegen. Für die Meinungsseite der Wochenendausgabe brauchen wir einen <b>Kommentar</b> zu einem der drei Wege, die gerade diskutiert werden. Sucht euch ein Thema aus, recherchiert im Material, entwickelt eigene Argumente und bezieht Stellung.</p>
+<div class="grid">${Object.entries(TOPICS).map(([k,o])=>`<button class="pick ${S.topic===k?'on':''}" data-topic="${k}"><span class="st">${S.topic===k?'Euer Thema':'Thema wählen'}</span><b>${o.t}</b><span class="muted small">${o.teaser}</span></button>`).join('')}</div>
+${S.topic?`<p><b>Eure Leitfrage:</b> ${TOPICS[S.topic].q}</p>`:''}
+<label for="team">Euer Team (Vornamen oder Gruppenname)</label>
+<input id="team" data-k="team" value="${esc(S.team)}" autocomplete="off">
+<div class="row"><button data-go="recherche" ${S.topic?'':'disabled'}>Zur Recherche</button></div></div>
+<div class="card"><div class="kicker">Kurz erklärt</div><h2>Was ist ein Kommentar?</h2>${KOMMENTAR}</div>`}
+
+function stations(){const T=TOPICS[S.topic];return [...T.places,{id:'eigen',t:'Eigene Argumente',m:'ohne Material',lage:'Nicht alles steht im Material. Gute Kommentare bringen eigene Gedanken ein. Diskutiert die Fragen und notiert Argumente, die ihr nutzen wollt.',auf:T.eigen}]}
+
+function vRecherche(){
+ if(!S.topic)return `<div class="card"><p>Wählt zuerst ein Thema.</p><div class="row"><button data-go="auftrag">Zum Auftrag</button></div></div>`;
+ const T=TOPICS[S.topic],st=stations();
+ if(S.open){const p=st.find(x=>x.id===S.open);return `
+<div class="card"><div class="kicker">${T.t} · Material: ${p.m}</div><h2>${p.t}</h2><p>${p.lage}</p>
+<h3>${p.id==='eigen'?'Denkanstöße':'Rechercheauftrag'}</h3><ol>${p.auf.map(a=>`<li>${a}</li>`).join('')}</ol>
+<label for="n">Notizblock <span class="hint">${p.id==='eigen'?'Notiert Pro- und Contra-Argumente in Stichpunkten.':'Stichpunkte reichen. Notiert immer die Fundstelle (Material und Zeile).'}</span></label>
+<textarea id="n" data-note="${p.id}" style="min-height:220px">${esc(S.notes[nk(p.id)])}</textarea>
+<div class="row"><button data-back="1">Zurück zur Übersicht</button></div></div>`}
+ const done=st.filter(p=>words(S.notes[nk(p.id)])>=20).length;
+ return `<div class="card"><div class="kicker">${T.t}</div><h2>Recherche</h2>
+<p class="muted">Leitfrage: ${T.q} Ein Schauplatz gilt als recherchiert, wenn ihr mindestens 20 Wörter notiert habt. Stand: ${done} von ${st.length}.</p>
+<div class="grid">${st.map(p=>{const ok=words(S.notes[nk(p.id)])>=20;return `<button class="pick ${ok?'done':''}" data-open="${p.id}"><span class="st">${ok?'recherchiert':'offen'}</span><b>${p.t}</b><span class="muted small">${p.m}</span></button>`}).join('')}</div>
+<div class="row"><button data-go="schreiben">Zum Schreibtisch</button></div></div>`}
+
+function vSchreiben(){
+ if(!S.topic)return `<div class="card"><p>Wählt zuerst ein Thema.</p><div class="row"><button data-go="auftrag">Zum Auftrag</button></div></div>`;
+ const T=TOPICS[S.topic];
+ const notes=stations().map(p=>S.notes[nk(p.id)]?`<h3>${p.t}</h3><div class="notebox">${esc(S.notes[nk(p.id)])}</div>`:'').join('')||'<p class="muted">Noch keine Notizen.</p>';
+ return `<div class="card"><div class="kicker">${T.t}</div><h2>Euer Kommentar</h2><p class="muted">Leitfrage: ${T.q}</p>
+<details class="box"><summary>Eure Recherchenotizen</summary>${notes}</details>
+<details class="box"><summary>Was ist ein guter Kommentar?</summary>${KOMMENTAR}</details>
+<label for="a-head">Überschrift<span class="hint">Kurz und zugespitzt. Sie darf schon eure Meinung verraten.</span></label>
+<input id="a-head" data-art="head" value="${esc(S.art.head)}" autocomplete="off">
+<label for="a-text">Kommentar<span class="hint">Aufbau: Einstieg mit Aufhänger und klarer Position → zwei bis drei begründete Argumente mit Belegen oder Beispielen (mindestens eines von euch selbst) → Gegenargument aufgreifen und entkräften → Schluss mit Fazit oder Forderung. Trennt die Teile durch Absätze.</span></label>
+<textarea id="a-text" data-art="text" style="min-height:420px">${esc(S.art.text)}</textarea>
+<div class="wc ${wcCls(words(S.art.text))}" id="wc-text">${wcText(words(S.art.text))}</div>
+<div class="row"><button data-go="konferenz">Bei der Redaktionskonferenz einreichen</button></div></div>`}
+
+function checks(){
+ const T=TOPICS[S.topic],a=S.art,txt=a.text||'',all=(a.head||'')+' '+txt,n=words(txt);
+ const sents=txt.match(/[^.!?]+[.!?]*/g)||[];
+ const start=sents.slice(0,3).join(' '),end=sents.slice(-2).join(' ');
+ const src=T.src.filter(x=>txt.includes(x)).length;
+ return [
+  [words(a.head)>=2,'Überschrift steht','Es fehlt noch eine Überschrift.'],
+  [n>=MIN&&n<=MAX,`Umfang: ${MIN}–${MAX} Wörter`,n<MIN?`Euer Text hat ${n} Wörter. Es fehlen noch ${MIN-n}.`:`Euer Text hat ${n} Wörter. Kürzt um ${n-MAX} Wörter – ein guter Kommentar ist auf den Punkt.`],
+  [T.kw.test(all),'Thema erkennbar','Aus dem Text geht nicht hervor, um welches Thema es geht.'],
+  [/\d|„|"|\?/.test(start),'Einstieg mit Aufhänger','Steigt in den ersten Sätzen mit einer Zahl, einem Zitat oder einer Frage ein.'],
+  [/sollte|muss|müsste|halte|finde|meine|meiner meinung|meines erachtens|unserer meinung|überzeugt|richtig|falsch|fehler|höchste zeit/i.test(start),'Position im Einstieg klar','Sagt schon in den ersten Sätzen deutlich, was ihr denkt.'],
+  [cnt(txt,/\b(weil|denn|deshalb|daher|da|somit|folglich|dadurch)\b/gi)>=3,'Argumente begründet','Begründet eure Argumente (weil, denn, deshalb …) – mindestens drei Begründungen.'],
+  [src>=1||/\d/.test(txt),'Belege aus dem Material','Stützt eure Argumente mit einem Fakt aus dem Material, z. B. einer Zahl, einem Namen oder einer Fundstelle.'],
+  [/zum beispiel|z\.\s?b\.|beispielsweise|etwa|man stelle sich|stellen sie sich|stell dir|nehmen wir|wie bei/i.test(txt),'Beispiel zur Veranschaulichung','Veranschaulicht mindestens ein Argument mit einem Beispiel („Zum Beispiel …“).'],
+  [/(zwar|kritiker|gegner|einwenden|man könnte|manche|einige|natürlich|gewiss|befürworter)[^.!?]*[.!?]?\s*[^.!?]*\b(aber|doch|jedoch|allerdings|trotzdem|dennoch)\b/i.test(txt),'Gegenargument entkräftet','Nennt ein Gegenargument und entkräftet es direkt danach, z. B. „Zwar …, aber …“.'],
+  [/sollte|muss|müssen|fordern|brauchen|endlich|zeit|deshalb|daher|fazit|am ende/i.test(end),'Schluss mit Fazit oder Forderung','Die letzten Sätze brauchen ein Fazit oder eine klare Forderung.'],
+  [/\?/.test(sents.slice(3).join(' '))||/!/.test(txt),'Rhetorisches Mittel','Probiert ein Stilmittel aus, z. B. eine rhetorische Frage im Hauptteil oder einen Ausruf.'],
+  [(txt.match(/\n\s*\n|\n/g)||[]).length>=2,'Absätze','Gliedert euren Kommentar in Absätze (Einstieg, Argumente, Gegenargument, Schluss).']
+ ];
+}
+
+function vKonferenz(){
+ if(!S.topic)return `<div class="card"><p>Wählt zuerst ein Thema.</p><div class="row"><button data-go="auftrag">Zum Auftrag</button></div></div>`;
+ const C=checks(),n=C.filter(c=>c[0]).length,t=C.length;
+ const v=n===t?['v-ok','Geht in Druck!','Formal ist alles da. Jetzt kommt die inhaltliche Prüfung: Gebt euren Kommentar einem anderen Team zum Gegenlesen.']
+  :n>=t-3?['v-mid','Fast fertig – überarbeiten','Gute Grundlage. Arbeitet die markierten Punkte nach und reicht erneut ein.']
+  :['v-bad','Zurück an den Schreibtisch','Da fehlt noch einiges. Nutzt eure Notizen und die Hinweise unten.'];
+ return `<div class="card"><div class="kicker">Redaktionskonferenz · ${esc(S.team)||'ohne Teamnamen'} · ${TOPICS[S.topic].t}</div>
+<div class="verdict ${v[0]}">${v[1]}</div><p>${v[2]}</p><p class="muted small">${n} von ${t} Kriterien erfüllt.</p>
+${C.map(c=>`<div class="check ${c[0]?'y':'n'}"><i>${c[0]?'✓':'✗'}</i><span>${c[1]}${c[0]?'':`<span class="tip">${c[2]}</span>`}</span></div>`).join('')}
+<p class="small muted" style="margin-top:12px">Die Redaktionskonferenz prüft nur, ob die Bausteine eines Kommentars vorhanden sind. Ob die Argumente stimmen und überzeugen, prüfen eure Mitschüler und eure Lehrkraft.</p>
+<div class="row"><button data-go="schreiben" class="sec">Weiter überarbeiten</button><button id="copy">Kommentar kopieren</button><span id="cmsg" class="small muted"></span></div></div>
+<div class="card"><h3>Gegenlesen (Peer-Review)</h3><ol>
+<li>Ist die Position nach den ersten Sätzen klar?</li><li>Welches Argument überzeugt am meisten, welches am wenigsten? Warum?</li>
+<li>Stimmen die Fakten aus dem Material?</li><li>Wird die Gegenseite fair dargestellt?</li><li>Bleibt der Schluss hängen?</li></ol></div>`}
+
+function render(){
+ tabs.innerHTML=TABS.map(([k,l])=>`<button class="${S.tab===k?'on':''}" data-go="${k}">${l}</button>`).join('');
+ app.innerHTML={auftrag:vAuftrag,recherche:vRecherche,schreiben:vSchreiben,konferenz:vKonferenz}[S.tab]();
+}
+document.addEventListener('click',e=>{
+ const b=e.target.closest('button');if(!b||b.disabled)return;
+ if(b.dataset.go){S.tab=b.dataset.go;S.open=null;save();render();window.scrollTo(0,0)}
+ else if(b.dataset.topic){S.topic=b.dataset.topic;save();render()}
+ else if(b.dataset.open){S.open=b.dataset.open;render();window.scrollTo(0,0)}
+ else if(b.dataset.back){S.open=null;render()}
+ else if(b.id==='copy'){
+  const a=S.art,txt=`${a.head||''}\n\n${a.text||''}\n\n(${S.team||'Team'})`;
+  const m=document.getElementById('cmsg'),fail=()=>m.textContent='Kopieren nicht möglich – bitte Text im Schreibtisch markieren.';
+  try{navigator.clipboard.writeText(txt).then(()=>m.textContent='Kopiert. Jetzt z. B. in TaskCards einfügen.',fail)}catch(err){fail()}
+ }
+});
+document.addEventListener('input',e=>{
+ const el=e.target;
+ if(el.dataset.k)S[el.dataset.k]=el.value;
+ else if(el.dataset.note)S.notes[nk(el.dataset.note)]=el.value;
+ else if(el.dataset.art){S.art[el.dataset.art]=el.value;const w=document.getElementById('wc-'+el.dataset.art);if(w){const n=words(el.value);w.textContent=wcText(n);w.className='wc '+wcCls(n)}}
+ save();
+});
+render();
+}
+</script>
+</body>
+</html>
